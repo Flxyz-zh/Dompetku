@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Dompetku — Finance Manager</title>
+  <link rel="icon" type="image/svg+xml" href="assets/wallet-blue.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard"><img class="brand-mark" src="assets/wallet-blue.svg" alt="" /><span>dompetku</span></a>
+      <nav aria-label="Navigasi utama">
+        <button class="nav-link active" data-page="dashboard"><span>▦</span>Dashboard</button>
+        <button class="nav-link" data-page="transactions"><span>↕</span>Transaksi</button>
+        <button class="nav-link" data-page="reports"><span>▥</span>Rekap Bulanan</button>
+      </nav>
+      <div class="sidebar-bottom"><button id="themeToggle" class="theme-button" aria-label="Ubah tema"><span>◐</span><span>Mode gelap</span></button></div>
+    </aside>
+    <main>
+      <header class="topbar"><div><p class="eyebrow" id="today"></p><h1 id="pageTitle">Ringkasan keuanganmu</h1></div><button class="profile" aria-label="Profil pengguna">AN</button></header>
+
+      <section class="page active" id="dashboard">
+        <div class="balance-hero"><div><p>Saldo saat ini</p><h2 id="currentBalance">Rp0</h2><span id="balanceCaption">Mulai catat transaksi pertamamu</span></div><div class="hero-orb">⌁</div></div>
+        <div class="metric-grid">
+          <article class="metric-card income"><div class="metric-icon">↙</div><div><p>Pemasukan bulan ini</p><strong id="monthIncome">Rp0</strong><small id="incomeCount">Belum ada pemasukan</small></div></article>
+          <article class="metric-card expense"><div class="metric-icon">↗</div><div><p>Pengeluaran bulan ini</p><strong id="monthExpense">Rp0</strong><small id="expenseCount">Belum ada pengeluaran</small></div></article>
+          <article class="metric-card saving"><div class="metric-icon">◈</div><div><p>Sisa uang bulan ini</p><strong id="monthSaving">Rp0</strong><small>Setelah seluruh transaksi</small></div></article>
+        </div>
+        <div class="dashboard-grid"><section class="panel chart-panel"><div class="panel-head"><div><h3>Arus keuangan</h3><p>Pemasukan dan pengeluaran 6 bulan terakhir</p></div><div class="legend"><span><i class="dot green"></i>Pemasukan</span><span><i class="dot red"></i>Pengeluaran</span></div></div><div id="chart" class="bar-chart" aria-label="Grafik pemasukan dan pengeluaran"></div></section>
+          <section class="panel recent-panel"><div class="panel-head"><div><h3>Transaksi terbaru</h3><p>Aktivitas keuangan terakhir</p></div><button class="text-button" data-go="transactions">Lihat semua</button></div><div id="recentTransactions" class="transaction-list"></div></section>
+        </div>
+      </section>
+
+      <section class="page" id="transactions">
+        <div class="section-title"><div><h2>Riwayat transaksi</h2><p>Kelola seluruh pemasukan dan pengeluaranmu.</p></div><button class="primary-button" id="addTransaction"><span>＋</span> Tambah transaksi</button></div>
+        <div class="filters panel"><label class="search"><span>⌕</span><input id="searchInput" placeholder="Cari transaksi..." /></label><select id="typeFilter"><option value="all">Semua jenis</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><select id="monthFilter"><option value="all">Semua bulan</option></select></div>
+        <section class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Kategori / sumber</th><th>Catatan</th><th>Nominal</th><th aria-label="Aksi"></th></tr></thead><tbody id="transactionTable"></tbody></table></div><div id="transactionEmpty" class="empty-state"><div>◌</div><h3>Belum ada transaksi</h3><p>Mulai dengan mencatat pemasukan atau pengeluaran pertamamu.</p><button class="primary-button empty-add">Tambah transaksi</button></div></section>
+      </section>
+
+      <section class="page" id="reports"><div class="section-title"><div><h2>Rekap bulanan</h2><p>Lihat pola keuangan dan uang yang berhasil kamu simpan.</p></div></div><section class="panel report-chart"><div class="panel-head"><div><h3>Perbandingan setiap bulan</h3><p>Ringkasan pemasukan dan pengeluaran</p></div></div><div id="reportChart" class="bar-chart tall"></div></section><div id="monthlyCards" class="monthly-grid"></div></section>
+    </main>
+  </div>
+  <dialog id="transactionDialog"><form id="transactionForm" method="dialog"><div class="modal-head"><div><p class="eyebrow">Pencatatan keuangan</p><h2 id="modalTitle">Tambah transaksi</h2></div><button class="icon-button" type="button" id="closeModal" aria-label="Tutup">×</button></div><input type="hidden" id="transactionId" /><div class="type-picker"><label><input type="radio" name="type" value="income" checked /><span>Pemasukan</span></label><label><input type="radio" name="type" value="expense" /><span>Pengeluaran</span></label></div><div class="form-grid"><label>Jumlah uang<input id="amount" inputmode="numeric" placeholder="Rp0" required /></label><label id="categoryLabel">Sumber pemasukan<select id="category" required></select></label><label>Tanggal<input id="date" type="date" required /></label><label class="full">Catatan <span>(opsional)</span><textarea id="note" rows="3" placeholder="Tulis catatan singkat..."></textarea></label></div><p class="form-error" id="formError" role="alert"></p><div class="modal-actions"><button type="button" class="secondary-button" id="cancelModal">Batal</button><button class="primary-button" type="submit">Simpan transaksi</button></div></form></dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
